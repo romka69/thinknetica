@@ -24,10 +24,16 @@ else
   b = side_2
 end
 
-if hypotenuse**2 == a**2 + b**2
+rectangular = hypotenuse**2 == a**2 + b**2
+
+if rectangular && a == b
+  puts "Треугольник прямоугольный и равнобедренный."
+elsif rectangular
   puts "Треугольник прямоугольный."
-elsif side_1 == side_2 && side_1 == side_3
+elsif side_1 == side_2 && side_2 == side_3 && side_3 == side_1
   puts "Треугольник равнобедренный и равносторонний, но не прямоугольный."
+elsif side_1 == side_2 || side_2 == side_3 || side_3 == side_1
+  puts "Треугольник равнобедренный."
 else
-  puts "Треугольник равнобедренный." 
+  puts "Треугольник простой."
 end
