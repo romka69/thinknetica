@@ -1,6 +1,6 @@
 puts "Скрипт выводит хеш с гласными буквами и ее порядковый номер в алфавите."
 
-vowels = Hash.new
+vowels = {}
 
 alphabet = ("a"..."z")
 alphabet.each_with_index { |word, i|

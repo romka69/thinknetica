@@ -1,7 +1,7 @@
 puts "Скрипт считает цену за товары, на основе данных пользователя."
 
-basket = Hash.new
-total_price = Array.new
+basket = {}
+total_price = []
 
 loop do
   print "Введите название товара: "
