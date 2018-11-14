@@ -22,10 +22,8 @@ class Train
     puts @wagon
   end
 
-  def add_wagon
+  def add_wagon(wagon)
     if @speed.zero?
-      wagon = CargoWagon.new if @type == :cargo
-      wagon = PassengerWagon.new if @type == :passenger
       @wagons << wagon
     end
   end
@@ -36,7 +34,7 @@ class Train
     end
   end
 
-  def route=(route)
+  def set_route(route)
     @route = route
     @route.stations[0].incoming_train(self)
   end
@@ -52,7 +50,7 @@ class Train
   def move_previous_station
     if previous_station
       current_station.send_train(self)
-      next_station.incoming_train(self)
+      previous_station.incoming_train(self)
       @station_index -= 1
     end
   end
