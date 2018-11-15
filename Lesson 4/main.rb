@@ -237,6 +237,7 @@ end
 def to_next_station
   check_trains_empty
   train = select_train
+  check_route_in_train(train)
   cur_station1 = train.current_station
   train.move_next_station
   cur_station2 = train.current_station
@@ -253,6 +254,7 @@ end
 def to_previous_station
   check_trains_empty
   train = select_train
+  check_route_in_train(train)
   cur_station1 = train.current_station
   train.move_previous_station
   cur_station2 = train.current_station
@@ -276,6 +278,13 @@ end
 def check_trains_empty
   if @trains.empty?
     puts "Сначала необходимо создать поезд."
+    train_menu
+  end
+end
+
+def check_route_in_train(train)
+  if train.route == []
+    puts "Сначала необходимо назначить поезду маршрут."
     train_menu
   end
 end
