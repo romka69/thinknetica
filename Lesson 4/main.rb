@@ -69,7 +69,7 @@ def station_menu
     when 3
       train_list_on_station
     when 4
-      main_menu
+      break
     when 5
       exit
     else
@@ -79,7 +79,9 @@ def station_menu
 end
 
 def create_station
-  loop do
+  loop_handler = true
+
+  while loop_handler
     print "Введите название станции: "
     name = gets.chomp.to_s
 
@@ -88,7 +90,7 @@ def create_station
     else
       @stations.push(Station.new(name))
       puts "Станция '#{name}' создана."
-      station_menu
+      loop_handler = false
     end
   end
 end
@@ -100,8 +102,6 @@ def stations_list
     puts "Список станций:"
     @stations.each { |station| puts station.name }
   end
-
-  station_menu
 end
 
 def train_list_on_station
@@ -113,8 +113,6 @@ def train_list_on_station
       station.train_list
     }
   end
-
-  station_menu
 end
 
 def station_in_stations?(name)
@@ -154,7 +152,7 @@ def train_menu
     when 6
       to_previous_station
     when 7
-      main_menu
+      break
     when 8
       exit
     else
@@ -164,7 +162,9 @@ def train_menu
 end
 
 def create_train
-  loop do
+  loop_handler = true
+
+  while loop_handler
     print "Введите номер поезда: "
     number = gets.chomp.to_s
 
@@ -177,23 +177,23 @@ def create_train
       case type
       when 1
         @trains.push(CargoTrain.new(number))
+        puts "Поезд '#{number}' создан."
+        loop_handler = false
       when 2
         @trains.push(PassengerTrain.new(number))
+        puts "Поезд '#{number}' создан."
+        loop_handler = false
       else
         puts "Не задан тип поезда или задан неправильно, попробуйте еще раз."
-        create_train
       end
-
-      puts "Поезд '#{number}' создан."
-      train_menu
     end
   end
 end
 
 def set_route_to_train
-  check_trains_empty
-
-  if @routes.empty?
+  if @trains.empty?
+    puts "Сначала необходимо создать поезд."
+  elsif @routes.empty?
     puts "Сначала необходимо создать маршрут."
   else
     route = select_route
@@ -201,71 +201,77 @@ def set_route_to_train
     train.set_route(route)
     puts "Выбранный путь добавлен в поезд '#{train.number}'."
   end
-
-  train_menu
 end
 
 def add_wagon
-  check_trains_empty
-  train = select_train
-
-  if train.type == :passenger
-    wagon = PassengerWagon.new
-  elsif train.type == :cargo
-    wagon = CargoWagon.new
+  if @trains.empty?
+    puts "Сначала необходимо создать поезд."
+  else
+    train = select_train
+	
+    if train.type == :passenger
+      train.add_wagon(PassengerWagon.new)
+	  puts "Вагон добавлен к поезду '#{train.number}'."
+    elsif train.type == :cargo
+      train.add_wagon(CargoWagon.new)
+	  puts "Вагон добавлен к поезду '#{train.number}'."
+    end
   end
-
-  train.add_wagon(wagon)
-  puts "Вагон #{wagon.type} добавлен к поезду '#{train.number}'."
-  train_menu
 end
 
 def del_wagon
-  check_trains_empty
-  train = select_train
-  
-  if train.wagons.size == 0
-    puts "У данного поезда нет вагонов."
+  if @trains.empty?
+    puts "Сначала необходимо создать поезд."
   else
-    train.del_wagon
-    puts "Вагон удален с поезда '#{train.number}'."
+    train = select_train
+	
+    if train.wagons.size == 0
+      puts "У данного поезда нет вагонов."
+    else
+      train.del_wagon
+      puts "Вагон удален с поезда '#{train.number}'."
+	end
   end
-
-  train_menu
 end
 
 def to_next_station
-  check_trains_empty
-  train = select_train
-  check_route_in_train(train)
-  cur_station1 = train.current_station
-  train.move_next_station
-  cur_station2 = train.current_station
-
-  if cur_station1 == cur_station2
-    puts "Поезд '#{train.number}' не движется дальше, т.к. находится на конечной станции."
+  if @trains.empty?
+    puts "Сначала необходимо создать поезд."
   else
-    puts "Поезд '#{train.number}' прибыл на станцию '#{cur_station2.name}'."
-  end
+    train = select_train
+	
+	if route_in_train?(train)
+      cur_station1 = train.current_station
+      train.move_next_station
+      cur_station2 = train.current_station
 
-  train_menu
+      if cur_station1 == cur_station2
+        puts "Поезд '#{train.number}' не движется дальше, т.к. находится на крайней станции."
+      else
+        puts "Поезд '#{train.number}' прибыл на станцию '#{cur_station2.name}'."
+	  end
+	end
+  end
 end
 
 def to_previous_station
-  check_trains_empty
-  train = select_train
-  check_route_in_train(train)
-  cur_station1 = train.current_station
-  train.move_previous_station
-  cur_station2 = train.current_station
-
-  if cur_station1 == cur_station2
-    puts "Поезд '#{train.number}' не движется назад, т.к. находится на начальной станции."
+  if @trains.empty?
+    puts "Сначала необходимо создать поезд."
   else
-    puts "Поезд '#{train.number}' прибыл на станцию '#{cur_station2.name}'."
-  end
+    train = select_train
+	
+    if route_in_train?(train)
+      cur_station1 = train.current_station
+      train.move_previous_station
+      cur_station2 = train.current_station
 
-  train_menu
+      if cur_station1 == cur_station2
+        puts "Поезд '#{train.number}' не движется назад, т.к. находится на крайней станции."
+      else
+        puts "Поезд '#{train.number}' прибыл на станцию '#{cur_station2.name}'."
+	  end
+	end
+  end
 end
 
 def train_in_trains?(number)
@@ -275,18 +281,12 @@ def train_in_trains?(number)
   false
 end
 
-def check_trains_empty
-  if @trains.empty?
-    puts "Сначала необходимо создать поезд."
-    train_menu
-  end
-end
-
-def check_route_in_train(train)
+def route_in_train?(train)
   if train.route == []
     puts "Сначала необходимо назначить поезду маршрут."
-    train_menu
+    return false
   end
+  true
 end
 
 def route_menu
@@ -310,7 +310,7 @@ def route_menu
     when 3
       del_station_from_route
     when 4
-      main_menu
+      break
     when 5
       exit
     else
@@ -320,67 +320,60 @@ def route_menu
 end
 
 def create_route
-  loop do
+  loop_handler = true
+  
+  while loop_handler
     if @stations.size < 2
       puts "Для создания пути необходимы 2 станции, создано #{@stations.size}."
-      route_menu
+	  loop_handler = false
+    else
+	  puts "Начало маршрута:"
+      station1 = select_station
+      puts "Конец маршрута:"
+      station2 = select_station
+	  
+	  if station1.name != station2.name
+        @routes.push(Route.new(station1, station2))
+        puts "Маршрут '#{station1.name} - #{station2.name}' создан.'"
+		loop_handler = false
+      else
+	    puts "Неверный выбор станций, попробуйте еще раз."
+	  end
     end
-
-    puts "Начало маршрута:"
-    station1 = select_station
-    puts "Конец маршрута:"
-    station2 = select_station
-
-    if station1.name != station2.name
-      @routes.push(Route.new(station1, station2))
-      puts "Путь '#{station1.name} - #{station2.name}' создан.'"
-      route_menu
-    end
-
-    puts "Неверный выбор станций, попробуйте еще раз."
   end
-
-  @routes.push(Route.new(station1, station2))
-  puts "Маршрут '#{station1.name} - #{station2.name}' создан.'"
-  route_menu
 end
 
 def add_station_to_route
-  check_routes_empty
-  route = select_route
-  station = select_station
+  if @routes.empty?
+    puts "Сначала необходимо создать маршрут."
+  else	
+    route = select_route
+    station = select_station
 
-  if station_in_route?(station, route)
-    puts "В маршруте уже есть станция '#{station.name}'."
-  else
-    route.add_station(station)
-    puts "В маршрут добавлена станция '#{station.name}'."
+    if station_in_route?(station, route)
+      puts "В маршруте уже есть станция '#{station.name}'."
+    else
+      route.add_station(station)
+      puts "В маршрут добавлена станция '#{station.name}'."
+	end
   end
-
-  route_menu
 end
 
 def del_station_from_route
-  check_routes_empty
-  route = select_route
-  station = select_station
-
-  if route.stations.size < 2
-    puts "Нет станций для удаления."
-  elsif station_in_route?(station, route)
-    route.del_station(station)
-    puts "Из маршрута удалена станция '#{station.name}'."
-  else
-    puts "В маршруте нет станции '#{station.name}'."
-  end
-
-  route_menu
-end
-
-def check_routes_empty
   if @routes.empty?
     puts "Сначала необходимо создать маршрут."
-    route_menu
+  else
+    route = select_route
+    station = select_station
+
+    if route.stations.size < 2
+      puts "Нет станций для удаления."
+    elsif station_in_route?(station, route)
+      route.del_station(station)
+      puts "Из маршрута удалена станция '#{station.name}'."
+    else
+      puts "В маршруте нет станции '#{station.name}'."
+	end
   end
 end
 
