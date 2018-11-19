@@ -15,6 +15,7 @@ class Station
     @name = name.to_s
     @trains = []
     @@stations << self
+    register_instance
   end
   
   def incoming_train(train)

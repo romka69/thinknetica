@@ -21,6 +21,7 @@ class Train
     @speed = 0
     @station_index = 0
     @@trains << self
+    register_instance
   end
 
   def speed=(speed)
