@@ -164,6 +164,7 @@ def create_train
       puts "Пасажирский поезд '#{number}' создан."
     else
       puts_wrong_choise
+	  Train.new(number, 'none')
     end
   end
 rescue => e
