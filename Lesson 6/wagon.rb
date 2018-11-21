@@ -20,6 +20,6 @@ class Wagon
   protected
 
   def validate!
-    raise "Тип должен быть грузовым или пассажирским." if type != :cargo && type != :passenger
+    raise "Тип должен быть грузовым или пассажирским." unless [:cargo, :passenger].include?(type)
   end
 end

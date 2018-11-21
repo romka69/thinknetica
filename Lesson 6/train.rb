@@ -34,10 +34,6 @@ class Train
   def stop
     @speed = 0
   end
-  
-  def count_wagon
-    puts @wagon
-  end
 
   def add_wagon(wagon)
     if @speed.zero?
@@ -95,6 +91,6 @@ class Train
 
   def validate!
     raise "Номер должен быть в формате: ХХХ-ХХ или ХХХХХ." if number !~ NUMBER_FORMAT
-    raise "Тип должен быть грузовым или пассажирским." if type != :cargo && type != :passenger
+    raise "Тип должен быть грузовым или пассажирским." unless [:cargo, :passenger].include?(type)
   end
 end
