@@ -112,29 +112,34 @@ def train_list_on_station
 end
 
 def train_list_on_station_detail
-  if @stations.empty?
-    puts "Станции не созданы."
-  else
-    @stations.each do |station|
-      puts "На станции '#{station.name}' стоят поезда:"
+  return puts "Станции не созданы." if @stations.empty?
 
-      station.each_train do |x|
-        puts "Поезд номер '#{x.number}'; Тип '#{x.type}'; Кол-во вагонов '#{x.wagons.size}'."
-        puts "Информация по вагонам в данном поезде:"
-        i = 0
-
-        x.each_wagon do |y|
-          i += 1
-          if y.type == :cargo
-            puts "Номер вагона '#{i}', Тип '#{y.type}'; Свободно объема '#{y.place - y.busy_place}; Занято объема '#{y.busy_place}'."
-          else
-            puts "Номер вагона '#{i}', Тип '#{y.type}'; Свободно мест '#{y.seats - y.busy_seats}; Занято объема '#{y.busy_seats}'."
-          end
-        end
-      end
-    end
+  @stations.each do |station|
+    puts "На станции '#{station.name}' стоят поезда:"
+    main_each_train(station)
   end
 end
+
+def main_each_train(station)
+  station.each_train do |train|
+    puts "Поезд номер '#{train.number}'; Тип '#{train.type}'; Кол-во вагонов '#{train.wagons.size}'."
+    main_each_wagon(train)
+  end
+end
+
+def main_each_wagon(train)
+  i = 0
+  train.each_wagon do |wagon|
+    i += 1
+    if wagon.type == :cargo
+      free_space = wagon.place - wagon.busy_place
+      puts "Номер вагона '#{i}', Тип '#{wagon.type}'; Свободно объема '#{free_space}; Занято объема '#{wagon.busy_place}'."
+    else
+      free_space = wagon.seats - wagon.busy_seats
+      puts "Номер вагона '#{i}', Тип '#{wagon.type}'; Свободно мест '#{free_space}; Занято мест '#{wagon.busy_seats}'."
+    end
+  end
+end  
 
 def station_in_stations?(name)
   @stations.each { |station|
