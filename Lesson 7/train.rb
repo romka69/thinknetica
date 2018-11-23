@@ -87,7 +87,7 @@ class Train
     false
   end
 
-  def go_to_wagons_train(&block)
+  def each_wagon(&block)
     @wagons.each { |wagon| yield(wagon) }
   end
 

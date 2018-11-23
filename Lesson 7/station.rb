@@ -42,7 +42,7 @@ class Station
     false
   end
 
-  def go_to_trains_station(&block)
+  def each_train(&block)
     @trains.each { |train| yield(train) }
   end
 

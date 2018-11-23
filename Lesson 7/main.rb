@@ -118,12 +118,12 @@ def train_list_on_station_detail
     @stations.each do |station|
       puts "На станции '#{station.name}' стоят поезда:"
 
-      station.go_to_trains_station do |x|
+      station.each_train do |x|
         puts "Поезд номер '#{x.number}'; Тип '#{x.type}'; Кол-во вагонов '#{x.wagons.size}'."
         puts "Информация по вагонам в данном поезде:"
         i = 0
 
-        x.go_to_wagons_train do |y|
+        x.each_wagon do |y|
           i += 1
           if y.type == :cargo
             puts "Номер вагона '#{i}', Тип '#{y.type}'; Свободно объема '#{y.place - y.busy_place}; Занято объема '#{y.busy_place}'."
