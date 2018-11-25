@@ -1,9 +1,6 @@
 Style/Documentation:
   Enabled: false
 
-#Style/OptionalArguments:
-#  Enabled: false
-
 Metrics/LineLength:
   Max: 125
 
