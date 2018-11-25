@@ -1,0 +1,27 @@
+Style/Documentation:
+  Enabled: false
+
+#Style/OptionalArguments:
+#  Enabled: false
+
+Metrics/LineLength:
+  Max: 125
+
+Metrics/MethodLength:
+  Max: 30
+
+Metrics/BlockLength:
+  Max: 30
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/AbcSize:
+  Max: 30
+
+Style/ClassVars:
+  Exclude:
+    - 'station.rb'
+    - 'route.rb'
+    - 'train.rb'
+    - 'wagon.rb'
