@@ -5,7 +5,7 @@ class Train
   include BrandName
   include InstanceCounter
 
-  NUMBER_FORMAT = /^[a-zа-я0-9]{3}-?[a-zа-я0-9]{2}$/i.freeze
+  NUMBER_FORMAT = /^[a-zа-я0-9]{3}-?[a-zа-я0-9]{2}$/i
 
   attr_reader :number, :type, :wagons, :speed, :route
 
