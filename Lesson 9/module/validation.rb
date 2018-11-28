@@ -8,14 +8,13 @@ module Validation
     @validate_data
 
     def validate_data
-      @validate_data ||= {}
+      @validate_data ||= []
     end
 
     def validate(name, option, param = nil)
       raise "Неправильный тип валидации." unless %i[presence format type].include?(option)
 
-      name_key = "valid_#{name}".to_sym
-      validate_data[name_key] = { name: name, option: option, param: param }
+      validate_data << { name: name, option: option, param: param }
     end
   end
   
@@ -30,7 +29,7 @@ module Validation
     private
 
     def validate!
-      self.class.validate_data.each_value do |val|
+      self.class.validate_data.each do |val|
         name = val[:name]
         name_val = instance_variable_get("@#{name}".to_sym)
         option_val = val[:option].to_sym
