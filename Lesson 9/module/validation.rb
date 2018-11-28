@@ -5,8 +5,6 @@ module Validation
   end
 
   module ClassMethods
-    @validate_data
-
     def validate_data
       @validate_data ||= []
     end
@@ -17,7 +15,7 @@ module Validation
       validate_data << { name: name, option: option, param: param }
     end
   end
-  
+
   module InstanceMethods
     def valid?
       validate!
@@ -26,23 +24,25 @@ module Validation
       false
     end
 
-    private
-
     def validate!
       self.class.validate_data.each do |val|
         name = val[:name]
         name_val = instance_variable_get("@#{name}".to_sym)
-        option_val = val[:option].to_sym
-        param_val = val[:param]
 
-        if option_val == :presence
-          raise "Значение '#{name}' не должно быть 'nil' или пустым!" if name_val.nil? || name_val.to_s.empty?
-        elsif option_val == :format
-          raise "Значение '#{name}' не соответствует заданному формату '#{param_val}'!" if name_val !~ param_val
-        elsif option_val == :type
-          raise "Значение типа '#{name}' должно быть '#{param_val}'!" unless name_val.class == param_val
-        end
+        eval("validate_#{val[:option]}(name_val, val[:param])")
       end
+    end
+
+    def validate_presence(name, _param)
+      raise "Значение переменной не должно быть 'nil' или пустым!" if name.nil? || name.to_s.empty?
+    end
+
+    def validate_format(name, format)
+      raise "Значение переменной не соответствует заданному формату '#{format}'!" if name !~ format
+    end
+
+    def validate_type(name, type)
+      raise "Значение типа переменной должно быть '#{type}'!" unless name.class == type
     end
   end
 end
