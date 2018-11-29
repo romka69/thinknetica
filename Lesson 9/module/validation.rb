@@ -29,7 +29,7 @@ module Validation
         name = val[:name]
         name_val = instance_variable_get("@#{name}".to_sym)
 
-        eval("validate_#{val[:option]}(name_val, val[:param])")
+        send("validate_#{val[:option]}", name_val, val[:param])
       end
     end
 
